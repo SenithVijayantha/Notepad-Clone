@@ -6,6 +6,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+//import java.lang.classfile.Attribute;
 
 public class NotepadClone extends JFrame {
     final private JTextPane textPane;
@@ -66,11 +67,27 @@ public class NotepadClone extends JFrame {
 //        Add menu bar to frame
         setJMenuBar(menuBar);
 
-//        Actions listeners
+//        Actions listeners for text styling
         boldTextItem.addActionListener(e -> makeSelectedTextBold());
         italicTextItem.addActionListener(e -> makeSelectedTextItalic());
+        underlineTextItem.addActionListener(e -> makeSelectedTextUnderline());
     }
 
+    private void makeSelectedTextUnderline() {
+        StyledDocument doc = textPane.getStyledDocument();
+        int start = textPane.getSelectionStart();
+        int end = textPane.getSelectionEnd();
+
+        if (start != end) {
+            AttributeSet attributes = doc.getCharacterElement(start).getAttributes();
+            boolean isUnderline = StyleConstants.isUnderline(attributes); // Check actual underline state
+            SimpleAttributeSet underline = new SimpleAttributeSet();
+            StyleConstants.setUnderline(underline, !isUnderline);
+            doc.setCharacterAttributes(start, end - start, underline, false);
+        }
+    }
+
+    //    Change the text style to Italic
     private void makeSelectedTextItalic() {
         StyledDocument doc = textPane.getStyledDocument();
         int start = textPane.getSelectionStart();
@@ -80,15 +97,14 @@ public class NotepadClone extends JFrame {
             AttributeSet attributes = doc.getCharacterElement(start).getAttributes();
             boolean isItalic = StyleConstants.isItalic(attributes); // Check actual bold state
             SimpleAttributeSet italic = new SimpleAttributeSet();
-
             StyleConstants.setItalic(italic, !isItalic);
-
             doc.setCharacterAttributes(start, end - start, italic, false);
         }
 
 
     }
 
+//    Change the text style to bold
     private void makeSelectedTextBold() {
         StyledDocument doc = textPane.getStyledDocument();
         int start = textPane.getSelectionStart();
@@ -98,9 +114,7 @@ public class NotepadClone extends JFrame {
             AttributeSet attributes = doc.getCharacterElement(start).getAttributes();
             boolean isBold = StyleConstants.isBold(attributes); // Check actual bold state
             SimpleAttributeSet bold = new SimpleAttributeSet();
-
             StyleConstants.setBold(bold, !isBold);
-
             doc.setCharacterAttributes(start, end - start, bold, false);
         }
     }
