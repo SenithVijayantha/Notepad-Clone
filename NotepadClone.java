@@ -1,11 +1,9 @@
 import org.w3c.dom.Attr;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 import java.awt.*;
+import java.io.*;
 //import java.lang.classfile.Attribute;
 
 public class NotepadClone extends JFrame {
@@ -67,11 +65,51 @@ public class NotepadClone extends JFrame {
 //        Add menu bar to frame
         setJMenuBar(menuBar);
 
+//        Action listeners for file handling
+        newMenuItem.addActionListener(e -> newFile());
+        openMenuItem.addActionListener(e -> openFile());
+        saveMenuItem.addActionListener(e -> saveFile());
+        exitMenuItem.addActionListener(e -> exitFile());
+
 //        Actions listeners for text styling
         boldTextItem.addActionListener(e -> makeSelectedTextBold());
         italicTextItem.addActionListener(e -> makeSelectedTextItalic());
         underlineTextItem.addActionListener(e -> makeSelectedTextUnderline());
     }
+
+    //    Clear the text are for a new file
+    private void newFile() {
+        textPane.setText("");
+    }
+
+    private void openFile() {
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                textPane.setText("");
+                String line;
+                StyledDocument doc = textPane.getStyledDocument();
+
+                while ((line = reader.readLine()) != null) {
+                    doc.insertString(doc.getLength(), line + "\n", null);
+                }
+            } catch (IOException | BadLocationException ex) {
+                JOptionPane.showMessageDialog(this, "Error opening files: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void saveFile() {
+    }
+
+    private void exitFile() {
+    }
+
+
+
+
 
     private void makeSelectedTextUnderline() {
         StyledDocument doc = textPane.getStyledDocument();
