@@ -69,7 +69,7 @@ public class NotepadClone extends JFrame {
         newMenuItem.addActionListener(e -> newFile());
         openMenuItem.addActionListener(e -> openFile());
         saveMenuItem.addActionListener(e -> saveFile());
-        exitMenuItem.addActionListener(e -> exitFile());
+        exitMenuItem.addActionListener(e -> System.exit(0));
 
 //        Actions listeners for text styling
         boldTextItem.addActionListener(e -> makeSelectedTextBold());
@@ -102,14 +102,17 @@ public class NotepadClone extends JFrame {
     }
 
     private void saveFile() {
+        int returnVal = fileChooser.showSaveDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(textPane.getText());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
+            }
+        }
     }
-
-    private void exitFile() {
-    }
-
-
-
-
 
     private void makeSelectedTextUnderline() {
         StyledDocument doc = textPane.getStyledDocument();
